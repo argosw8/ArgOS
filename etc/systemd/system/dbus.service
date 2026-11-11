@@ -1,0 +1,13 @@
+[Unit]
+Description=D-Bus System Message Bus
+After=local-fs.target
+Before=systemd-logind.service
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/dbus-daemon --system --fork
+ExecStartPost=/bin/sh -c 'for i in 1 2 3 4 5; do test -S /run/dbus/system_bus_socket && exit 0; sleep 1; done; exit 1'
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
